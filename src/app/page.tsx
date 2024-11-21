@@ -11,14 +11,20 @@ export default function HomePage() {
     const [isRoleChecked, setIsRoleChecked] = useState(false);
 
     useEffect(() => {
-        if (user) {
-            if (user.isAdmin) {
-                push(routes.adminReports);
-            } else {
-                setIsRoleChecked(true);
-            }
+        // If there is not user then do nothing
+        if (typeof user?.id !== "number") {
+            return;
         }
-    }, [push, user]);
+
+        if (user.isAdmin) {
+            // If user is an admin, redirect them to the `/reports` page
+            push(routes.adminReports);
+        } else {
+            // If user is not an admin, then set the role to checked so that the user report
+            // page is displayed
+            setIsRoleChecked(true);
+        }
+    }, [push, user?.id, user?.isAdmin]);
 
     if (!isRoleChecked) {
         return null;
