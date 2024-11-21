@@ -10,22 +10,10 @@ import {
     Drawer as MuiDrawer,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import LuggageIcon from "@mui/icons-material/Luggage";
-import AssessmentIcon from "@mui/icons-material/Assessment";
 import { useMemo } from "react";
+import { usePageContentContext } from "@/hooks/use-page-content";
 
 export const SIDE_BAR_WIDTH = 300;
-
-const sideBarItems = [
-    {
-        text: "Συμπλήρωση Αναφοράς",
-        icon: <AssessmentIcon />,
-    },
-    {
-        text: "Αίτηση για Άδεια",
-        icon: <LuggageIcon />,
-    },
-];
 
 interface SideBarProps {
     isOpen: boolean;
@@ -106,6 +94,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export const SideBar = ({ isOpen, onClose }: SideBarProps) => {
+    const { sideBarOptions } = usePageContentContext();
     const listItemStyles = useMemo(
         () => ({
             button: styleListItemButton(isOpen),
@@ -123,21 +112,26 @@ export const SideBar = ({ isOpen, onClose }: SideBarProps) => {
                 </IconButton>
             </DrawerHeader>
             <Divider />
-            <List>
-                {sideBarItems.map(({ text, icon }) => (
-                    <ListItem key={text} disablePadding sx={styleListItem}>
-                        <ListItemButton sx={listItemStyles.button}>
-                            <ListItemIcon sx={listItemStyles.icon}>
-                                {icon}
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={text}
-                                sx={listItemStyles.text}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            {sideBarOptions.length > 0 && (
+                <List>
+                    {sideBarOptions.map(({ text, icon, action }) => (
+                        <ListItem key={text} disablePadding sx={styleListItem}>
+                            <ListItemButton
+                                onClick={action}
+                                sx={listItemStyles.button}
+                            >
+                                <ListItemIcon sx={listItemStyles.icon}>
+                                    {icon}
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={text}
+                                    sx={listItemStyles.text}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            )}
         </Drawer>
     );
 };

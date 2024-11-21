@@ -34,7 +34,7 @@ interface UserResponse {
     isLoading: boolean;
 }
 
-const mockUser: User = {
+const user: User = {
     id: 3,
     ldapId: "gep",
     name: "Στρατιώτης(ΕΠ) Θανάς Λεράι",
@@ -44,9 +44,19 @@ const mockUser: User = {
     points: 0,
 };
 
+const adminUser: User = {
+    id: 1,
+    ldapId: "pasxalisk",
+    name: "Τχης(ΕΠ) Πασχάλης Κυρανούδης",
+    isAdmin: true,
+    rank: Rank.Major,
+};
+
+const users = [undefined, user, adminUser];
+
 export const useUser = (): UserResponse => {
     return {
         isLoading: false,
-        user: mockUser,
+        user: users[2],
     };
 };

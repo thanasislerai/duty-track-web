@@ -4,7 +4,6 @@ import { SIDE_BAR_WIDTH } from "../side-bar";
 import { Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
 import { useUser } from "@/hooks/use-user";
 import { useMemo } from "react";
 
@@ -54,14 +53,6 @@ export const AppBar = ({
 }: AppBarProps) => {
     const { user } = useUser();
 
-    const appBarActionButton = useMemo(() => {
-        if (typeof user?.id === "number") {
-            return <Button startIcon={<LogoutIcon />}>Εξοδος</Button>;
-        }
-
-        return <Button startIcon={<LoginIcon />}>Εισοδος</Button>;
-    }, [user?.id]);
-
     const sxMenuIcon = useMemo(
         () => styleMenuIcon(isSideBarOpen),
         [isSideBarOpen],
@@ -85,7 +76,7 @@ export const AppBar = ({
                     </Typography>
                 )}
                 <Box sx={styleSpacer} />
-                {appBarActionButton}
+                <Button startIcon={<LogoutIcon />}>Εξοδος</Button>
             </Toolbar>
         </_AppBar>
     );

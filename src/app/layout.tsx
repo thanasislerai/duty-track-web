@@ -4,6 +4,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Page } from "@/components/page";
+import { PageContentProvider } from "@/providers/page-content";
 
 export const metadata: Metadata = {
     title: "Duty Report",
@@ -20,8 +21,10 @@ export default function RootLayout({
                 <AppRouterCacheProvider>
                     <QueryClientProvider>
                         <ThemeProvider theme={theme}>
-                            <CssBaseline />
-                            <Page>{children}</Page>
+                            <PageContentProvider>
+                                <CssBaseline />
+                                <Page>{children}</Page>
+                            </PageContentProvider>
                         </ThemeProvider>
                     </QueryClientProvider>
                 </AppRouterCacheProvider>
