@@ -7,6 +7,7 @@ import {
 } from "@/hooks/use-tasks";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useEffect, useState } from "react";
 import { TaskForm } from "@/components/task-form";
@@ -19,6 +20,7 @@ import {
 import { useSideBarContext } from "@/hooks/use-side-bar";
 import { useUser } from "@/hooks/use-user";
 import { NotFoundPage } from "../not-found";
+import { TaskDeleteConfirmDialog } from "@/components/task-delete-confirm-dialog";
 
 const styleHeader = {
     display: "flex",
@@ -29,7 +31,6 @@ const styleHeader = {
 const styleTableContainer = {
     mt: 4,
     maxHeight: 500,
-    // maxWidth: "100%",
 };
 
 const styleLinearProgress = {
@@ -42,6 +43,7 @@ export const AdminTasksPage = () => {
     const { isSideBarOpen } = useSideBarContext();
     const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState<Task>();
+    const [taskToDelete, setTaskToDelete] = useState<Task>();
     const [dataGridKey, setDataGridKey] = useState(0);
 
     const rows: GridRowsProp<Task> = tasks;
@@ -68,13 +70,22 @@ export const AdminTasksPage = () => {
         {
             field: "actions",
             type: "actions",
+            headerName: "ΕΝΕΡΓΕΙΕΣ",
             flex: 0.15,
             getActions: (params) => [
                 <GridActionsCellItem
                     key={params.id}
                     icon={<EditIcon />}
-                    label="Delete"
+                    label="Επεξεργασία"
                     onClick={() => handleTaskEdit(params.row)}
+                />,
+                <GridActionsCellItem
+                    key={params.id}
+                    icon={<DeleteIcon />}
+                    label="Διαγραφή"
+                    onClick={() =>
+                        handleTaskDeleteConfirmDialogOpen(params.row)
+                    }
                 />,
             ],
         },
@@ -98,6 +109,14 @@ export const AdminTasksPage = () => {
         },
         [handleTaskFormOpen],
     );
+
+    const handleTaskDeleteConfirmDialogOpen = useCallback((task: Task) => {
+        setTaskToDelete(task);
+    }, []);
+
+    const handleTaskDeleteConfirmDialogClose = useCallback(() => {
+        setTaskToDelete(undefined);
+    }, []);
 
     useEffect(() => {
         const resizeTimeout = setTimeout(
@@ -124,6 +143,10 @@ export const AdminTasksPage = () => {
                 isOpen={isTaskFormOpen}
                 task={taskToEdit}
                 onClose={handleTaskFormClose}
+            />
+            <TaskDeleteConfirmDialog
+                task={taskToDelete}
+                onClose={handleTaskDeleteConfirmDialogClose}
             />
             <Box>
                 <Box sx={styleHeader}>
