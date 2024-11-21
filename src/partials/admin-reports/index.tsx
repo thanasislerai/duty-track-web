@@ -1,9 +1,9 @@
 "use client";
 import { useUser } from "@/hooks/use-user";
 import { Typography } from "@mui/material";
-import { NotFoundPage } from "../not-found";
+import NotFoundPage from "../not-found";
 
-export const AdminReportsPage = () => {
+export default function AdminReports() {
     const { user } = useUser();
 
     if (!user?.isAdmin) {
@@ -11,4 +11,4 @@ export const AdminReportsPage = () => {
     }
 
     return <Typography variant="h3">Admin Reports</Typography>;
-};
+}

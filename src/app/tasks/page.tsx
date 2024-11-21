@@ -1,5 +1,5 @@
-import { AdminTasksPage as Page } from "@/pages/admin-tasks";
+import AdminTasks from "@/partials/admin-tasks";
 
 export default function AdminTasksPage() {
-    return <Page />;
+    return <AdminTasks />;
 }

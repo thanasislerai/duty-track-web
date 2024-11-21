@@ -8,7 +8,7 @@ import {
     startOfDay,
 } from "date-fns";
 
-export const getReporSubmissionLimits = (date: Date) => {
+export const getReporSubmissionLimits = (date: Date | string) => {
     if (isFriday(date)) {
         // If it's Friday, set start to 07:30 today and end to 09:30 tomorrow
         return {

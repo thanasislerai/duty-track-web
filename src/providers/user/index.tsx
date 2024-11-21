@@ -45,12 +45,30 @@ interface UserProviderProps {
 
 export const UserContext = createContext<UserContextValue>(null!);
 
+const getLocalStorageItem = (key: string) => {
+    if (typeof window !== "undefined") {
+        return localStorage.getItem(key);
+    }
+    return null;
+};
+
+const setLocalStorageItem = (key: string, value: string) => {
+    if (typeof window !== "undefined") {
+        localStorage.setItem(key, value);
+    }
+};
+
+const removeLocalStorageItem = (key: string) => {
+    if (typeof window !== "undefined") {
+        localStorage.removeItem(key);
+    }
+};
+
 export const UserProvider = ({ children }: UserProviderProps) => {
     const { push } = useRouter();
     const [user, setUser] = useState<User>();
-    const [token, setToken] = useState<string | null>(
-        localStorage.getItem(JWT_TOKEN_LOCAL_STORAGE_KEY),
-    );
+    const [token, setToken] = useState<string | null>(null);
+    const [isTokenLoading, setIsTokenLoading] = useState(true);
     const queryClient = useQueryClient();
     const {
         mutate: login,
@@ -61,7 +79,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             mutator({ url: "user/login", method: "post", data }),
         onSuccess: ({ token }) => {
             setToken(token);
-            localStorage.setItem(JWT_TOKEN_LOCAL_STORAGE_KEY, token);
+            setLocalStorageItem(JWT_TOKEN_LOCAL_STORAGE_KEY, token);
             queryClient.invalidateQueries({ queryKey: userProfileQueryKey });
         },
     });
@@ -82,7 +100,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     const logout = useCallback(() => {
         setUser(undefined);
         setToken(null);
-        localStorage.removeItem(JWT_TOKEN_LOCAL_STORAGE_KEY);
+        removeLocalStorageItem(JWT_TOKEN_LOCAL_STORAGE_KEY);
         queryClient.clear();
         push(routes.home);
     }, [push, queryClient]);
@@ -90,7 +108,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     const value = useMemo<UserContextValue>(
         () => ({
             user: user || userProfile,
-            isLoading: isLoginLoading || isProfileLoading,
+            isLoading: isLoginLoading || isProfileLoading || isTokenLoading,
             login,
             logout,
             error: loginError || userProfileError,
@@ -98,6 +116,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         [
             isLoginLoading,
             isProfileLoading,
+            isTokenLoading,
             login,
             loginError,
             logout,
@@ -106,6 +125,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             userProfileError,
         ],
     );
+
+    useEffect(() => {
+        setToken(getLocalStorageItem(JWT_TOKEN_LOCAL_STORAGE_KEY));
+        setIsTokenLoading(false);
+    }, []);
 
     useEffect(() => {
         if (!userProfile) {

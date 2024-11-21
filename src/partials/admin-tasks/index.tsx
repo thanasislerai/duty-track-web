@@ -19,7 +19,7 @@ import {
 } from "@mui/x-data-grid";
 import { useSideBarContext } from "@/hooks/use-side-bar";
 import { useUser } from "@/hooks/use-user";
-import { NotFoundPage } from "../not-found";
+import NotFoundPage from "../not-found";
 import { TaskDeleteConfirmDialog } from "@/components/task-delete-confirm-dialog";
 
 const styleHeader = {
@@ -37,7 +37,7 @@ const styleLinearProgress = {
     m: -3,
 };
 
-export const AdminTasksPage = () => {
+export default function AdminTasks() {
     const { user } = useUser();
     const { tasks, isLoading } = useTasks();
     const { isSideBarOpen } = useSideBarContext();
@@ -169,4 +169,4 @@ export const AdminTasksPage = () => {
             </Box>
         </>
     );
-};
+}

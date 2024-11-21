@@ -1,5 +1,5 @@
-import { NotFoundPage as Page } from "@/pages/not-found";
+import NotFound from "@/partials/not-found";
 
 export default function NotFoundPage() {
-    return <Page />;
+    return <NotFound />;
 }

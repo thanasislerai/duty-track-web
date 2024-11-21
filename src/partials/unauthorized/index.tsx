@@ -1,3 +1,4 @@
+"use client";
 import {
     Box,
     Button,
@@ -29,7 +30,7 @@ const styleFieldsWrapper = {
     marginBottom: 4,
 };
 
-export const UnauthorizedPage = () => {
+export default function Unauthorized() {
     const { login, isLoading, error } = useUser();
     const {
         control,
@@ -114,4 +115,4 @@ export const UnauthorizedPage = () => {
             </Box>
         </>
     );
-};
+}

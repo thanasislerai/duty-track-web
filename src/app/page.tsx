@@ -1,6 +1,6 @@
 "use client";
 import { useUser } from "@/hooks/use-user";
-import { UserReportPage } from "@/pages/user-report";
+import UserReport from "@/partials/user-report";
 import { routes } from "@/routes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,5 +24,5 @@ export default function HomePage() {
         return null;
     }
 
-    return <UserReportPage />;
+    return <UserReport />;
 }

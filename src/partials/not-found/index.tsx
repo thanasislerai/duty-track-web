@@ -17,7 +17,7 @@ const styleWrapper = (adjustHeight: boolean) => ({
     gap: 4,
 });
 
-export const NotFoundPage = () => {
+export default function NotFound() {
     const { user } = useUser();
     const { push } = useRouter();
 
@@ -42,4 +42,4 @@ export const NotFoundPage = () => {
             </Button>
         </Box>
     );
-};
+}

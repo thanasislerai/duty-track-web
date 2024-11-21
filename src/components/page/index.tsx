@@ -5,7 +5,7 @@ import { DrawerHeader, SideBar } from "../side-bar";
 import { Box, LinearProgress } from "@mui/material";
 import { useSideBarContext } from "@/hooks/use-side-bar";
 import { useUser } from "@/hooks/use-user";
-import { UnauthorizedPage } from "@/pages/unauthorized";
+import UnauthorizedPage from "@/partials/unauthorized";
 import { usePathname } from "next/navigation";
 import { routes } from "@/routes";
 import NotFoundPage from "@/app/not-found";

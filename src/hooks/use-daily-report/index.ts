@@ -21,6 +21,7 @@ export const useDailyReport = () => {
         queryKey: dailyReportQueryKey,
         queryFn: () => fetcher({ queryKey: dailyReportQueryKey }),
         enabled: typeof user?.id === "number",
+        retry: 3,
     });
 
     return {

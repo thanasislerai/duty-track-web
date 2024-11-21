@@ -1,5 +1,5 @@
-import { AdminReportsPage as Page } from "@/pages/admin-reports";
+import AdminReports from "@/partials/admin-reports";
 
 export default function AdminReportsPage() {
-    return <Page />;
+    return <AdminReports />;
 }

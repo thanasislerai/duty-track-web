@@ -1,3 +1,4 @@
+"use client";
 import { useDailyReport } from "@/hooks/use-daily-report";
 import {
     Alert,
@@ -52,7 +53,7 @@ const styleWarningAlert = {
     mt: 2,
 };
 
-export const UserReportPage = () => {
+export default function UserReport() {
     const now = new Date();
     const { dailyReport, isLoading } = useDailyReport();
     const {
@@ -61,7 +62,8 @@ export const UserReportPage = () => {
         formState: { errors },
     } = useForm<ReportFormFields>();
     const completedTasks = new Set(dailyReport?.completedTasks);
-    const { end } = getReporSubmissionLimits(now);
+    const timeOfReference = dailyReport?.createdAt ?? now;
+    const { end } = getReporSubmissionLimits(timeOfReference);
     const [isOverdue, setIsOverDue] = useState(false);
     const countDownRef = useRef<Countdown>(null);
     const {
@@ -71,9 +73,16 @@ export const UserReportPage = () => {
         error: submitError,
     } = useReportSubmit();
 
+    const date = format(timeOfReference, "dd/MM/yyyy");
+
     const isSubmitted = useMemo(
         () => !!dailyReport?.submittedAt,
         [dailyReport?.submittedAt],
+    );
+
+    const isReadOnly = useMemo(
+        () => isSubmitted || isOverdue || isSubmitLoading,
+        [isOverdue, isSubmitLoading, isSubmitted],
     );
 
     const onSubmit = useCallback(
@@ -118,6 +127,14 @@ export const UserReportPage = () => {
         return <LinearProgress sx={styleLinearProgress} />;
     }
 
+    if (!dailyReport) {
+        return (
+            <Alert variant="outlined" severity="error" sx={styleWarningAlert}>
+                Η ημερήσια αναφορά για τις {date} δε βρέθηκε
+            </Alert>
+        );
+    }
+
     return (
         <>
             {isSubmitSuccessful && (
@@ -134,14 +151,14 @@ export const UserReportPage = () => {
             )}
             <Container maxWidth="md">
                 <Typography variant="h3" align="center" gutterBottom>
-                    Ημερήσια Αναφορά {format(now, "dd/MM/yyyy")}
+                    Ημερήσια Αναφορά {date}
                 </Typography>
                 {isSubmitted && (
                     <Box sx={styleSubmissionHeaderWrapper}>
                         <CheckCircleIcon color="success" />
                         <Typography variant="h5" align="center">
                             Υποβλήθηκε στις{" "}
-                            {format(dailyReport!.submittedAt!, "HH:mm:ss")}
+                            {format(dailyReport.submittedAt!, "HH:mm:ss")}
                         </Typography>
                     </Box>
                 )}
@@ -169,9 +186,6 @@ export const UserReportPage = () => {
                             control={control}
                             name="author"
                             defaultValue={dailyReport?.author ?? ""}
-                            disabled={
-                                isSubmitted || isOverdue || isSubmitLoading
-                            }
                             rules={{
                                 required: "Παρακαλώ εισάγετε το όνομά σας",
                             }}
@@ -180,13 +194,19 @@ export const UserReportPage = () => {
                                     variant="outlined"
                                     inputRef={field.ref}
                                     name={field.name}
-                                    onChange={field.onChange}
+                                    onChange={
+                                        isReadOnly ? undefined : field.onChange
+                                    }
                                     value={field.value}
-                                    disabled={field.disabled}
                                     label="Όνομα"
                                     fullWidth
                                     error={!!errors.author}
                                     helperText={errors.author?.message}
+                                    slotProps={{
+                                        input: {
+                                            readOnly: isReadOnly,
+                                        },
+                                    }}
                                 />
                             )}
                         />
@@ -211,11 +231,6 @@ export const UserReportPage = () => {
                                                 defaultValue={completedTasks.has(
                                                     id,
                                                 )}
-                                                disabled={
-                                                    isSubmitted ||
-                                                    isOverdue ||
-                                                    isSubmitLoading
-                                                }
                                                 render={({
                                                     field: {
                                                         name,
@@ -227,10 +242,18 @@ export const UserReportPage = () => {
                                                 }) => (
                                                     <Checkbox
                                                         name={name}
-                                                        onChange={onChange}
+                                                        onChange={
+                                                            isReadOnly
+                                                                ? undefined
+                                                                : onChange
+                                                        }
                                                         checked={value}
                                                         inputRef={ref}
                                                         disabled={disabled}
+                                                        readOnly={isReadOnly}
+                                                        disableRipple={
+                                                            isReadOnly
+                                                        }
                                                     />
                                                 )}
                                             />
@@ -256,4 +279,4 @@ export const UserReportPage = () => {
             </Container>
         </>
     );
-};
+}
