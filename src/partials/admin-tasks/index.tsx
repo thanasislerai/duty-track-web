@@ -5,7 +5,13 @@ import {
     useTasks,
     weekDayTranslator,
 } from "@/hooks/use-tasks";
-import { Box, Button, LinearProgress, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    LinearProgress,
+    Tooltip,
+    Typography,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -73,20 +79,29 @@ export default function AdminTasks() {
             headerName: "ΕΝΕΡΓΕΙΕΣ",
             flex: 0.15,
             getActions: (params) => [
-                <GridActionsCellItem
+                <Tooltip
                     key={params.id}
-                    icon={<EditIcon />}
-                    label="Επεξεργασία"
-                    onClick={() => handleTaskEdit(params.row)}
-                />,
-                <GridActionsCellItem
-                    key={params.id}
-                    icon={<DeleteIcon />}
-                    label="Διαγραφή"
-                    onClick={() =>
-                        handleTaskDeleteConfirmDialogOpen(params.row)
-                    }
-                />,
+                    title="Επεξεργασία"
+                    placement="top"
+                    arrow
+                >
+                    <GridActionsCellItem
+                        key={params.id}
+                        icon={<EditIcon />}
+                        label="Επεξεργασία"
+                        onClick={() => handleTaskEdit(params.row)}
+                    />
+                </Tooltip>,
+                <Tooltip key={params.id} title="Διαγραφή" placement="top" arrow>
+                    <GridActionsCellItem
+                        key={params.id}
+                        icon={<DeleteIcon />}
+                        label="Διαγραφή"
+                        onClick={() =>
+                            handleTaskDeleteConfirmDialogOpen(params.row)
+                        }
+                    />
+                </Tooltip>,
             ],
         },
     ];
