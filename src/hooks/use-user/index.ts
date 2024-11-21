@@ -19,7 +19,7 @@ enum Rank {
     General = "Στρατηγός",
 }
 
-interface User {
+export interface User {
     id: number;
     ldapId: string;
     name: string;
@@ -57,6 +57,6 @@ const users = [undefined, user, adminUser];
 export const useUser = (): UserResponse => {
     return {
         isLoading: false,
-        user: users[2],
+        user: users[1],
     };
 };
