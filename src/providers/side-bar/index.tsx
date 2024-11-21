@@ -5,11 +5,13 @@ import {
     createContext,
     ReactNode,
     useCallback,
+    useEffect,
     useMemo,
     useState,
 } from "react";
 import { useRouter } from "next/navigation";
 import { routes } from "@/routes";
+import { useUser } from "@/hooks/use-user";
 
 interface SideBarOption {
     text: string;
@@ -32,6 +34,7 @@ export const SideBarContext = createContext<SideBarContextValue>(null!);
 
 export const SideBarProvider = ({ children }: SideBarProviderProps) => {
     const { push } = useRouter();
+    const { user } = useUser();
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
     const handleSideBarOpen = useCallback(() => {
@@ -41,6 +44,8 @@ export const SideBarProvider = ({ children }: SideBarProviderProps) => {
     const handleSideBarClose = useCallback(() => {
         setIsSideBarOpen(false);
     }, []);
+
+    useEffect(() => handleSideBarClose(), [handleSideBarClose, user?.id]);
 
     const value = useMemo<SideBarContextValue>(() => {
         return {
