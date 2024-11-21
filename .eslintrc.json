@@ -1,3 +1,52 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:import/typescript",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module",
+        "project": ["./tsconfig.json", "./cypress/tsconfig.json"]
+    },
+    "plugins": ["deprecation", "prettier"],
+    "rules": {
+        "deprecation/deprecation": "warn",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "semi": ["error", "always"], // Replaced with ESLint's base rule
+        "arrow-parens": "off",
+        "comma-dangle": ["off"],
+        "import/no-named-as-default": "off",
+        "import/no-unresolved": "off",
+        "jsx-no-bind": "off",
+        "jsx-no-multiline-js": "off",
+        "max-classes-per-file": "off",
+        "max-len": "off",
+        "new-cap": "error",
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-trailing-spaces": "warn",
+        "no-multiple-empty-lines": [
+            "warn",
+            { "max": 1, "maxEOF": 0, "maxBOF": 0 }
+        ],
+        "quote-props": ["error", "as-needed"],
+        "quotes": ["error", "double", { "avoidEscape": true }],
+        "react/no-danger": "error",
+        "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "prettier/prettier": "error"
+    }
 }
