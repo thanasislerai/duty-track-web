@@ -1,5 +1,5 @@
 "use client";
-import LuggageIcon from "@mui/icons-material/Luggage";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { createContext, ReactNode, useMemo, useState } from "react";
 import { useUser } from "@/hooks/use-user";
@@ -11,9 +11,9 @@ interface SideBarOption {
 }
 
 export type PageContentId =
-    | "user-leave"
+    | "user-profile"
     | "user-report"
-    | "admin-leaves"
+    | "admin-profile"
     | "admin-reports";
 
 interface PageContentProviderProps {
@@ -51,14 +51,14 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
                 pageId: pageContentId,
                 sideBarOptions: [
                     {
-                        text: "Άδειες",
-                        icon: <LuggageIcon />,
-                        action: () => setPageContentId("admin-leaves"),
-                    },
-                    {
                         text: "Ημερήσιες Αναφορές",
                         icon: <AssessmentIcon />,
                         action: () => setPageContentId("admin-reports"),
+                    },
+                    {
+                        text: "Προφίλ",
+                        icon: <AccountBoxIcon />,
+                        action: () => setPageContentId("admin-profile"),
                     },
                 ],
             };
@@ -69,14 +69,14 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
             pageId: pageContentId,
             sideBarOptions: [
                 {
-                    text: "Αίτηση για Άδεια",
-                    icon: <LuggageIcon />,
-                    action: () => setPageContentId("user-leave"),
-                },
-                {
                     text: "Συμπλήρωση Αναφοράς",
                     icon: <AssessmentIcon />,
                     action: () => setPageContentId("user-report"),
+                },
+                {
+                    text: "Προφίλ",
+                    icon: <AccountBoxIcon />,
+                    action: () => setPageContentId("user-profile"),
                 },
             ],
         };
