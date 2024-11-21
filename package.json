@@ -6,6 +6,7 @@
         "dev": "next dev --turbopack -p 3001",
         "build": "next build",
         "start": "next start -p 3001",
+        "start:background": "pm2 start node_modules/next/dist/bin/next --name \"task-report-web\" -- start -p 3001",
         "lint": "next lint"
     },
     "dependencies": {
