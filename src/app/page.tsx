@@ -1,28 +1,28 @@
 "use client";
-import { usePageContentContext } from "@/hooks/use-page-content";
-import { AdminDutiesPage } from "@/pages/admin-duties";
-import { AdminProfilePage } from "@/pages/admin-profile";
-import { AdminReportsPage } from "@/pages/admin-reports";
-import { UnauthorizedPage } from "@/pages/unauthorized";
-import { UserProfilePage } from "@/pages/user-profile";
+import { useUser } from "@/hooks/use-user";
 import { UserReportPage } from "@/pages/user-report";
-import { PageContentId } from "@/providers/page-content";
-import { ReactNode } from "react";
-
-const pageMap: Record<PageContentId, ReactNode> = {
-    "admin-reports": <AdminReportsPage />,
-    "admin-profile": <AdminProfilePage />,
-    "admin-duties": <AdminDutiesPage />,
-    "user-report": <UserReportPage />,
-    "user-profile": <UserProfilePage />,
-};
+import { routes } from "@/routes";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
-    const { authorized, pageId } = usePageContentContext();
+    const { user } = useUser();
+    const { push } = useRouter();
+    const [isRoleChecked, setIsRoleChecked] = useState(false);
 
-    if (!authorized) {
-        return <UnauthorizedPage />;
+    useEffect(() => {
+        if (user) {
+            if (user.isAdmin) {
+                push(routes.adminReports);
+            } else {
+                setIsRoleChecked(true);
+            }
+        }
+    }, [push, user]);
+
+    if (!isRoleChecked) {
+        return null;
     }
 
-    return pageMap[pageId!];
+    return <UserReportPage />;
 }

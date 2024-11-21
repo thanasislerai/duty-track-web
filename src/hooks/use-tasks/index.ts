@@ -1,7 +1,8 @@
 import { fetcher } from "@/network/fetcher";
 import { useQuery } from "@tanstack/react-query";
+import { useUser } from "../use-user";
 
-export const weekDayTranslator = (day: Duty["weeklyOn"]) => {
+export const weekDayTranslator = (day: Task["weekDay"]) => {
     switch (day) {
         case "Monday":
             return "Δευτέρα";
@@ -22,7 +23,7 @@ export const weekDayTranslator = (day: Duty["weeklyOn"]) => {
     }
 };
 
-export const frequencyTranslator = (frequency: Duty["frequency"]) => {
+export const frequencyTranslator = (frequency: Task["frequency"]) => {
     switch (frequency) {
         case "daily":
             return "Καθημερινά";
@@ -31,11 +32,11 @@ export const frequencyTranslator = (frequency: Duty["frequency"]) => {
     }
 };
 
-export interface Duty {
+export interface Task {
     id: number;
-    title: string;
+    description: string;
     frequency: "daily" | "weekly";
-    weeklyOn?:
+    weekDay?:
         | "Monday"
         | "Tuesday"
         | "Wednesday"
@@ -46,16 +47,21 @@ export interface Duty {
     enabled: boolean;
 }
 
-export const dutiesQueryKey = ["duty"];
+export const tasksQueryKey = ["task"];
 
-export function useDuties() {
+export function useTasks() {
+    const { user } = useUser();
     const { data, ...rest } = useQuery({
-        queryKey: dutiesQueryKey,
-        queryFn: () => fetcher<Duty[]>({ queryKey: dutiesQueryKey }),
+        queryKey: tasksQueryKey,
+        queryFn: () =>
+            fetcher<Task[]>({
+                queryKey: tasksQueryKey,
+            }),
+        enabled: Boolean(user?.isAdmin),
     });
 
     return {
-        duties: data ?? [],
+        tasks: data ?? [],
         ...rest,
     };
 }

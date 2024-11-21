@@ -1,9 +1,10 @@
+"use client";
 import {
-    Duty,
+    Task,
     frequencyTranslator,
     weekDayTranslator,
-} from "@/hooks/use-duties";
-import { FormFields, useSaveDuty } from "@/hooks/use-save-duty";
+} from "@/hooks/use-tasks";
+import { FormFields, useSaveTask } from "@/hooks/use-save-task";
 import {
     Button,
     Dialog,
@@ -26,18 +27,18 @@ const styleDialogContent = {
     gap: 4,
 };
 
-interface DutyFormProps extends Omit<DialogProps, "open" | "onClose"> {
+interface TaskFormProps extends Omit<DialogProps, "open" | "onClose"> {
     isOpen: boolean;
-    duty?: Duty;
+    task?: Task;
     onClose: () => void;
 }
 
-export const DutyForm = ({
+export const TaskForm = ({
     isOpen,
-    duty,
+    task,
     onClose,
     ...dialogProps
-}: DutyFormProps) => {
+}: TaskFormProps) => {
     const {
         control,
         watch,
@@ -53,19 +54,19 @@ export const DutyForm = ({
         error: saveError,
         isSuccess: isSaveSuccessful,
         isPending,
-    } = useSaveDuty({ dutyId: duty?.id, onSuccess: onClose });
+    } = useSaveTask({ taskId: task?.id, onSuccess: onClose });
     const [isEditMode, setIsEditMode] = useState(false);
 
     const frequency = watch("frequency");
     const saveSuccessInfoMessage = useMemo(
         () =>
             isEditMode
-                ? "Το καθήκον ενημερώθηκε επιτυχώς"
-                : "Το νέο καθήκον προστέθηκε με επιτυχία",
+                ? "Το task ενημερώθηκε επιτυχώς"
+                : "Το νέο task προστέθηκε με επιτυχία",
         [isEditMode],
     );
     const dialogTitle = useMemo(
-        () => (isEditMode ? "Επεξεργασία Καθήκοντος" : "Προσθήκη Καθήκοντος"),
+        () => (isEditMode ? "Επεξεργασία Task" : "Προσθήκη Task"),
         [isEditMode],
     );
 
@@ -81,26 +82,22 @@ export const DutyForm = ({
             return;
         }
 
-        setIsEditMode(typeof duty?.id === "number");
-    }, [isOpen, duty]);
+        setIsEditMode(typeof task?.id === "number");
+    }, [isOpen, task?.id]);
 
     useEffect(() => {
         if (isOpen) {
-            // Reset form values to the current duty when the dialog opens
             reset({
-                title: duty?.title || "",
-                frequency: duty?.frequency,
-                weeklyOn: duty?.weeklyOn,
+                description: task?.description || "",
+                frequency: task?.frequency,
+                weekDay: task?.weekDay,
             });
         }
-    }, [isOpen, duty, reset]);
+    }, [isOpen, reset, task?.description, task?.frequency, task?.weekDay]);
 
     useEffect(() => {
-        setValue(
-            "weeklyOn",
-            frequency === "daily" ? undefined : duty?.weeklyOn,
-        );
-    }, [duty?.weeklyOn, frequency, setValue]);
+        setValue("weekDay", frequency === "daily" ? undefined : task?.weekDay);
+    }, [task?.weekDay, frequency, setValue]);
 
     return (
         <>
@@ -128,11 +125,11 @@ export const DutyForm = ({
                     <DialogContent dividers sx={styleDialogContent}>
                         <Controller
                             control={control}
-                            name="title"
-                            defaultValue={duty?.title}
+                            name="description"
+                            defaultValue={task?.description}
                             rules={{
                                 required:
-                                    "Ο τίτλος του καθήκοντος είναι υποχρεωτικό πεδίο",
+                                    "Ο τίτλος του task είναι υποχρεωτικό πεδίο",
                             }}
                             render={({ field }) => (
                                 <TextField
@@ -142,18 +139,18 @@ export const DutyForm = ({
                                     ref={field.ref}
                                     value={field.value ?? ""}
                                     label="Τίτλος"
-                                    error={!!errors.title}
-                                    helperText={errors.title?.message}
+                                    error={!!errors.description}
+                                    helperText={errors.description?.message}
                                 />
                             )}
                         />
                         <Controller
                             control={control}
                             name="frequency"
-                            defaultValue={duty?.frequency}
+                            defaultValue={task?.frequency}
                             rules={{
                                 required:
-                                    "Θα πρέπει να καθορίσετε τη συχνότητα του καθήκοντος",
+                                    "Θα πρέπει να καθορίσετε τη συχνότητα του task",
                             }}
                             render={({ field }) => (
                                 <TextField
@@ -163,10 +160,10 @@ export const DutyForm = ({
                                         field.onChange(e);
                                         // Clear weeklyOn field if frequency changes to daily
                                         setValue(
-                                            "weeklyOn",
+                                            "weekDay",
                                             e.target.value === "daily"
                                                 ? undefined
-                                                : duty?.weeklyOn,
+                                                : task?.weekDay,
                                         );
                                     }}
                                     ref={field.ref}
@@ -180,11 +177,11 @@ export const DutyForm = ({
                                         <MenuItem
                                             key={frequency}
                                             value={
-                                                frequency as Duty["frequency"]
+                                                frequency as Task["frequency"]
                                             }
                                         >
                                             {frequencyTranslator(
-                                                frequency as Duty["frequency"],
+                                                frequency as Task["frequency"],
                                             )}
                                         </MenuItem>
                                     ))}
@@ -193,12 +190,12 @@ export const DutyForm = ({
                         />
                         <Controller
                             control={control}
-                            name="weeklyOn"
-                            defaultValue={duty?.weeklyOn}
+                            name="weekDay"
+                            defaultValue={task?.weekDay}
                             rules={{
                                 required:
                                     frequency === "weekly"
-                                        ? "Θα πρέπει να καθορίσετε ποια μέρα της εβδομάδας θα πρέπει να εκτελείται αυτό το καθήκον"
+                                        ? "Θα πρέπει να καθορίσετε ποια μέρα της εβδομάδας θα πρέπει να εκτελείται αυτό το task"
                                         : false,
                             }}
                             render={({ field }) => (
@@ -211,8 +208,8 @@ export const DutyForm = ({
                                     label="Κάθε"
                                     select
                                     disabled={frequency !== "weekly"}
-                                    error={!!errors.weeklyOn}
-                                    helperText={errors.weeklyOn?.message}
+                                    error={!!errors.weekDay}
+                                    helperText={errors.weekDay?.message}
                                 >
                                     {[
                                         "Monday",
@@ -225,10 +222,10 @@ export const DutyForm = ({
                                     ].map((day) => (
                                         <MenuItem
                                             key={day}
-                                            value={day as Duty["weeklyOn"]}
+                                            value={day as Task["weekDay"]}
                                         >
                                             {weekDayTranslator(
-                                                day as Duty["weeklyOn"],
+                                                day as Task["weekDay"],
                                             )}
                                         </MenuItem>
                                     ))}
@@ -238,7 +235,7 @@ export const DutyForm = ({
                         <Controller
                             control={control}
                             name="enabled"
-                            defaultValue={duty?.enabled ?? true}
+                            defaultValue={task?.enabled ?? true}
                             render={({ field }) => (
                                 <FormControlLabel
                                     control={
@@ -250,7 +247,7 @@ export const DutyForm = ({
                                         />
                                     }
                                     label="Ενεργό"
-                                    defaultChecked={duty?.enabled}
+                                    defaultChecked={task?.enabled}
                                 />
                             )}
                         />

@@ -1,3 +1,4 @@
+"use client";
 import { Alert, AlertProps, Snackbar } from "@mui/material";
 import { useCallback, useState } from "react";
 

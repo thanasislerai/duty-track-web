@@ -4,10 +4,11 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Page } from "@/components/page";
-import { PageContentProvider } from "@/providers/page-content";
+import { SideBarProvider } from "@/providers/side-bar";
+import { UserProvider } from "@/providers/user";
 
 export const metadata: Metadata = {
-    title: "Duty Report",
+    title: "Task Report",
 };
 
 export default function RootLayout({
@@ -21,10 +22,12 @@ export default function RootLayout({
                 <AppRouterCacheProvider>
                     <QueryClientProvider>
                         <ThemeProvider theme={theme}>
-                            <PageContentProvider>
-                                <CssBaseline />
-                                <Page>{children}</Page>
-                            </PageContentProvider>
+                            <UserProvider>
+                                <SideBarProvider>
+                                    <CssBaseline />
+                                    <Page>{children}</Page>
+                                </SideBarProvider>
+                            </UserProvider>
                         </ThemeProvider>
                     </QueryClientProvider>
                 </AppRouterCacheProvider>

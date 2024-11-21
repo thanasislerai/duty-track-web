@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useMemo } from "react";
-import { usePageContentContext } from "@/hooks/use-page-content";
+import { useSideBarContext } from "@/hooks/use-side-bar";
 
 export const SIDE_BAR_WIDTH = 300;
 
@@ -94,7 +94,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export const SideBar = ({ isOpen, onClose }: SideBarProps) => {
-    const { sideBarOptions } = usePageContentContext();
+    const { sideBarOptions } = useSideBarContext();
     const listItemStyles = useMemo(
         () => ({
             button: styleListItemButton(isOpen),

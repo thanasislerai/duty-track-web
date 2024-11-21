@@ -1,4 +1,4 @@
-import { AxiosRequestHeaders } from "axios";
+import { AxiosRequestConfig } from "axios";
 import axiosInstance from "./axios";
 
 type HttpMethod = "post" | "put" | "delete" | "patch";
@@ -7,7 +7,7 @@ type MutatorParams<T> = {
     method: HttpMethod;
     url: string;
     data?: T;
-    headers?: AxiosRequestHeaders;
+    headers?: AxiosRequestConfig["headers"];
 };
 
 export const mutator = async <TResponse = void, TData = unknown>({

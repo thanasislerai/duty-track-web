@@ -2,8 +2,13 @@
 import { ReactNode, useMemo } from "react";
 import { AppBar } from "../app-bar";
 import { DrawerHeader, SideBar } from "../side-bar";
-import { Box } from "@mui/material";
-import { usePageContentContext } from "@/hooks/use-page-content";
+import { Box, LinearProgress } from "@mui/material";
+import { useSideBarContext } from "@/hooks/use-side-bar";
+import { useUser } from "@/hooks/use-user";
+import { UnauthorizedPage } from "@/pages/unauthorized";
+import { usePathname } from "next/navigation";
+import { routes } from "@/routes";
+import NotFoundPage from "@/app/not-found";
 
 const stylePageWrapper = { display: "flex" };
 const styleMain = (withPadding: boolean) => ({
@@ -16,27 +21,40 @@ interface PageProps {
 }
 
 export function Page({ children }: PageProps) {
-    const { authorized, isSideBarOpen, handleSideBarClose, handleSideBarOpen } =
-        usePageContentContext();
+    const pathName = usePathname() ?? "";
+    const { user, isLoading: isUserLoading } = useUser();
+    const { isSideBarOpen, handleSideBarClose, handleSideBarOpen } =
+        useSideBarContext();
 
-    const sxMain = useMemo(() => styleMain(authorized), [authorized]);
+    const sxMain = useMemo(
+        () => styleMain(typeof user?.id === "number"),
+        [user?.id],
+    );
+
+    if (isUserLoading) {
+        return <LinearProgress />;
+    }
+
+    if (!user) {
+        return pathName === routes.home ? (
+            <UnauthorizedPage />
+        ) : (
+            <NotFoundPage />
+        );
+    }
 
     return (
         <Box sx={stylePageWrapper}>
-            {authorized && (
-                <>
-                    <AppBar
-                        isSideBarOpen={isSideBarOpen}
-                        handleMenuButtonClick={handleSideBarOpen}
-                    />
-                    <SideBar
-                        isOpen={isSideBarOpen}
-                        onClose={handleSideBarClose}
-                    />
-                </>
+            <AppBar
+                isSideBarOpen={isSideBarOpen}
+                handleMenuButtonClick={handleSideBarOpen}
+            />
+            {user?.isAdmin && (
+                <SideBar isOpen={isSideBarOpen} onClose={handleSideBarClose} />
             )}
+
             <Box component="main" sx={sxMain}>
-                {authorized && <DrawerHeader />}
+                {!!user && <DrawerHeader />}
                 {children}
             </Box>
         </Box>

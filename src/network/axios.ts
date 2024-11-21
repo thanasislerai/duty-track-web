@@ -1,4 +1,8 @@
-import axios from "axios";
+import axios, { AxiosError as _AxiosError } from "axios";
+
+export const JWT_TOKEN_LOCAL_STORAGE_KEY = "ut";
+
+export type AxiosError = _AxiosError<{ message: string }>;
 
 const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -9,7 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem(JWT_TOKEN_LOCAL_STORAGE_KEY);
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

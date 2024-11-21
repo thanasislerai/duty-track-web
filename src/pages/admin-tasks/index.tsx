@@ -1,21 +1,24 @@
+"use client";
 import {
-    Duty,
+    Task,
     frequencyTranslator,
-    useDuties,
+    useTasks,
     weekDayTranslator,
-} from "@/hooks/use-duties";
+} from "@/hooks/use-tasks";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback, useEffect, useState } from "react";
-import { DutyForm } from "@/components/duty-form";
+import { TaskForm } from "@/components/task-form";
 import {
     DataGrid,
     GridActionsCellItem,
     GridColDef,
     GridRowsProp,
 } from "@mui/x-data-grid";
-import { usePageContentContext } from "@/hooks/use-page-content";
+import { useSideBarContext } from "@/hooks/use-side-bar";
+import { useUser } from "@/hooks/use-user";
+import { NotFoundPage } from "../not-found";
 
 const styleHeader = {
     display: "flex",
@@ -33,16 +36,17 @@ const styleLinearProgress = {
     m: -3,
 };
 
-export const AdminDutiesPage = () => {
-    const { duties, isLoading } = useDuties();
-    const { isSideBarOpen } = usePageContentContext();
-    const [isDutyFormOpen, setIsFormDutyOpen] = useState(false);
-    const [dutyToEdit, setDutyToEdit] = useState<Duty>();
+export const AdminTasksPage = () => {
+    const { user } = useUser();
+    const { tasks, isLoading } = useTasks();
+    const { isSideBarOpen } = useSideBarContext();
+    const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+    const [taskToEdit, setTaskToEdit] = useState<Task>();
     const [dataGridKey, setDataGridKey] = useState(0);
 
-    const rows: GridRowsProp<Duty> = duties;
+    const rows: GridRowsProp<Task> = tasks;
     const columns: GridColDef[] = [
-        { field: "title", headerName: "ΤΙΤΛΟΣ", flex: 0.4 },
+        { field: "description", headerName: "ΠΕΡΙΓΡΑΦΗ", flex: 0.4 },
         {
             field: "enabled",
             headerName: "ΚΑΤΑΣΤΑΣΗ",
@@ -56,7 +60,7 @@ export const AdminDutiesPage = () => {
             flex: 0.15,
         },
         {
-            field: "weeklyOn",
+            field: "weekDay",
             headerName: "ΚΑΘΕ",
             valueGetter: weekDayTranslator,
             flex: 0.15,
@@ -70,29 +74,29 @@ export const AdminDutiesPage = () => {
                     key={params.id}
                     icon={<EditIcon />}
                     label="Delete"
-                    onClick={() => handleDutyEdit(params.row)}
+                    onClick={() => handleTaskEdit(params.row)}
                 />,
             ],
         },
     ];
 
-    const handleDutyFormOpen = useCallback(() => setIsFormDutyOpen(true), []);
-    const handleDutyFormClose = useCallback(() => {
-        setIsFormDutyOpen(false);
-        setDutyToEdit(undefined);
+    const handleTaskFormOpen = useCallback(() => setIsTaskFormOpen(true), []);
+    const handleTaskFormClose = useCallback(() => {
+        setIsTaskFormOpen(false);
+        setTaskToEdit(undefined);
     }, []);
 
-    const handleDutyAdd = useCallback(() => {
-        setDutyToEdit(undefined);
-        handleDutyFormOpen();
-    }, [handleDutyFormOpen]);
+    const handleTaskAdd = useCallback(() => {
+        setTaskToEdit(undefined);
+        handleTaskFormOpen();
+    }, [handleTaskFormOpen]);
 
-    const handleDutyEdit = useCallback(
-        (duty: Duty) => {
-            setDutyToEdit(duty);
-            handleDutyFormOpen();
+    const handleTaskEdit = useCallback(
+        (task: Task) => {
+            setTaskToEdit(task);
+            handleTaskFormOpen();
         },
-        [handleDutyFormOpen],
+        [handleTaskFormOpen],
     );
 
     useEffect(() => {
@@ -110,21 +114,25 @@ export const AdminDutiesPage = () => {
         return <LinearProgress sx={styleLinearProgress} />;
     }
 
+    if (!user?.isAdmin) {
+        return <NotFoundPage />;
+    }
+
     return (
         <>
-            <DutyForm
-                isOpen={isDutyFormOpen}
-                duty={dutyToEdit}
-                onClose={handleDutyFormClose}
+            <TaskForm
+                isOpen={isTaskFormOpen}
+                task={taskToEdit}
+                onClose={handleTaskFormClose}
             />
             <Box>
                 <Box sx={styleHeader}>
-                    <Typography variant="h4">Επεξεργασία Καθηκόντων</Typography>
+                    <Typography variant="h4">Επεξεργασία Tasks</Typography>
                     <Button
                         color="success"
                         variant="contained"
                         startIcon={<AddIcon />}
-                        onClick={handleDutyAdd}
+                        onClick={handleTaskAdd}
                     >
                         ΠΡΟΣΘΗΚΗ
                     </Button>

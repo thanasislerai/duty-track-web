@@ -1,11 +1,11 @@
 import { styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { SIDE_BAR_WIDTH } from "../side-bar";
-import { Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
+import { Box, Button, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useUser } from "@/hooks/use-user";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 interface _AppBarProps extends MuiAppBarProps {
     isSideBarOpen: boolean;
@@ -51,32 +51,36 @@ export const AppBar = ({
     isSideBarOpen,
     handleMenuButtonClick,
 }: AppBarProps) => {
-    const { user } = useUser();
+    const { user, logout } = useUser();
 
     const sxMenuIcon = useMemo(
         () => styleMenuIcon(isSideBarOpen),
         [isSideBarOpen],
     );
 
+    const handleLogout = useCallback(() => logout(), [logout]);
+
     return (
         <_AppBar isSideBarOpen={isSideBarOpen}>
             <Toolbar>
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleMenuButtonClick}
-                    edge="start"
-                    sx={sxMenuIcon}
-                >
-                    <MenuIcon />
-                </IconButton>
-                {!!user?.name && (
-                    <Typography variant="h6" noWrap component="div">
-                        {user.name}
-                    </Typography>
+                {user?.isAdmin && (
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleMenuButtonClick}
+                        edge="start"
+                        sx={sxMenuIcon}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                 )}
+
                 <Box sx={styleSpacer} />
-                <Button startIcon={<LogoutIcon />}>Εξοδος</Button>
+                {!!user && (
+                    <Button onClick={handleLogout} startIcon={<LogoutIcon />}>
+                        Εξοδος
+                    </Button>
+                )}
             </Toolbar>
         </_AppBar>
     );
