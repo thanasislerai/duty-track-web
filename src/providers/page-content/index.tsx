@@ -37,12 +37,18 @@ interface PageContentContextValue {
     authorized: boolean;
     pageId?: PageContentId;
     sideBarOptions: SideBarOption[];
+    isSideBarOpen: boolean;
+    handleSideBarOpen: () => void;
+    handleSideBarClose: () => void;
 }
 
 export const PageContentContext = createContext<PageContentContextValue>({
     authorized: false,
     sideBarOptions: [],
     pageId: undefined,
+    isSideBarOpen: true,
+    handleSideBarOpen: () => {},
+    handleSideBarClose: () => {},
 });
 
 export const PageContentProvider = ({ children }: PageContentProviderProps) => {
@@ -50,7 +56,16 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [pageContentId, setPageContentId] = useState<PageContentId>();
+    const [isSideBarOpen, setIsSideBarOpen] = useState(true);
     const pageIdParam = searchParams?.get("pageId");
+
+    const handleSideBarOpen = useCallback(() => {
+        setIsSideBarOpen(true);
+    }, []);
+
+    const handleSideBarClose = useCallback(() => {
+        setIsSideBarOpen(false);
+    }, []);
 
     const setQueryParam = useCallback(
         (value: PageContentId) => {
@@ -85,6 +100,9 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
             return {
                 authorized: false,
                 sideBarOptions: [],
+                isSideBarOpen,
+                handleSideBarClose,
+                handleSideBarOpen,
             };
         }
 
@@ -92,6 +110,9 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
             return {
                 authorized: true,
                 pageId: pageContentId,
+                isSideBarOpen,
+                handleSideBarClose,
+                handleSideBarOpen,
                 sideBarOptions: [
                     {
                         text: "Ημερήσιες Αναφορές",
@@ -124,6 +145,9 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
         return {
             authorized: true,
             pageId: pageContentId,
+            isSideBarOpen,
+            handleSideBarClose,
+            handleSideBarOpen,
             sideBarOptions: [
                 {
                     text: "Συμπλήρωση Αναφοράς",
@@ -143,7 +167,15 @@ export const PageContentProvider = ({ children }: PageContentProviderProps) => {
                 },
             ],
         };
-    }, [pageContentId, setQueryParam, user?.id, user?.isAdmin]);
+    }, [
+        handleSideBarClose,
+        handleSideBarOpen,
+        isSideBarOpen,
+        pageContentId,
+        setQueryParam,
+        user?.id,
+        user?.isAdmin,
+    ]);
 
     return (
         <PageContentContext.Provider value={value}>

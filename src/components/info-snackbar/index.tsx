@@ -1,17 +1,14 @@
 import { Alert, AlertProps, Snackbar } from "@mui/material";
 import { useCallback, useState } from "react";
 
-interface ReportSubmissionSnackbarProps {
+interface InfoSnackbarProps {
     message: string;
     severity: AlertProps["severity"];
 }
 
 const styleAlert = { width: "100%" };
 
-export const ReportSubmissionSnackbar = ({
-    message,
-    severity,
-}: ReportSubmissionSnackbarProps) => {
+export const InfoSnackbar = ({ message, severity }: InfoSnackbarProps) => {
     const [isOpen, setIsOpen] = useState(!!message);
 
     const handleClose = useCallback(() => setIsOpen(false), []);

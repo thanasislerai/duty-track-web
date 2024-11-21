@@ -1,5 +1,6 @@
 "use client";
 import { usePageContentContext } from "@/hooks/use-page-content";
+import { AdminDutiesPage } from "@/pages/admin-duties";
 import { AdminProfilePage } from "@/pages/admin-profile";
 import { AdminReportsPage } from "@/pages/admin-reports";
 import { UnauthorizedPage } from "@/pages/unauthorized";
@@ -10,8 +11,9 @@ import { ReactNode } from "react";
 
 const pageMap: Record<PageContentId, ReactNode> = {
     "admin-reports": <AdminReportsPage />,
-    "user-report": <UserReportPage />,
     "admin-profile": <AdminProfilePage />,
+    "admin-duties": <AdminDutiesPage />,
+    "user-report": <UserReportPage />,
     "user-profile": <UserProfilePage />,
 };
 

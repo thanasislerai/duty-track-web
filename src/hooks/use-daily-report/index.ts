@@ -1,19 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { User } from "../use-user";
 import { fetcher } from "@/network/fetcher";
+import { Duty } from "../use-duties";
 
-interface Duty {
-    id: number;
-    title: string;
-    frequency: "daily" | "weekly";
-    weeklyOn?:
-        | "Monday"
-        | "Tuesday"
-        | "Wednesday"
-        | "Thursday"
-        | "Friday"
-        | "Saturday"
-        | "Sunday";
+interface ReportDuty extends Duty {
     isDone: boolean;
 }
 
@@ -21,7 +11,7 @@ interface DailyReport {
     date: string;
     id: number;
     user: User;
-    duties: Duty[];
+    duties: ReportDuty[];
 }
 
 export const dailyReportQueryKey = ["report/daily"];

@@ -14,7 +14,7 @@ export function useReportSubmit(reportId: number | undefined) {
     const queryClient = useQueryClient();
     const { mutate, ...rest } = useMutation<void, Error, ReportSubmitData>({
         mutationFn: (data) =>
-            mutator<void>({ method: "put", url: `report/${reportId}`, data }),
+            mutator({ method: "put", url: `report/${reportId}`, data }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: dailyReportQueryKey });
         },

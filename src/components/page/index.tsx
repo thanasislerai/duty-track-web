@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useMemo } from "react";
 import { AppBar } from "../app-bar";
 import { DrawerHeader, SideBar } from "../side-bar";
 import { Box } from "@mui/material";
@@ -16,16 +16,8 @@ interface PageProps {
 }
 
 export function Page({ children }: PageProps) {
-    const { authorized } = usePageContentContext();
-    const [isSideBarOpen, setIsSideBarOpen] = useState(true);
-
-    const handleDrawerOpen = useCallback(() => {
-        setIsSideBarOpen(true);
-    }, []);
-
-    const handleDrawerClose = useCallback(() => {
-        setIsSideBarOpen(false);
-    }, []);
+    const { authorized, isSideBarOpen, handleSideBarClose, handleSideBarOpen } =
+        usePageContentContext();
 
     const sxMain = useMemo(() => styleMain(authorized), [authorized]);
 
@@ -35,11 +27,11 @@ export function Page({ children }: PageProps) {
                 <>
                     <AppBar
                         isSideBarOpen={isSideBarOpen}
-                        handleMenuButtonClick={handleDrawerOpen}
+                        handleMenuButtonClick={handleSideBarOpen}
                     />
                     <SideBar
                         isOpen={isSideBarOpen}
-                        onClose={handleDrawerClose}
+                        onClose={handleSideBarClose}
                     />
                 </>
             )}

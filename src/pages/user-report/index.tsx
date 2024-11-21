@@ -13,7 +13,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { useCallback } from "react";
-import { ReportSubmissionSnackbar } from "@/components/report-submission-snackbar";
+import { InfoSnackbar } from "@/components/info-snackbar";
 import { ReportFormFields, useReportSubmit } from "@/hooks/use-report-submit";
 
 const styleLinearProgress = {
@@ -112,13 +112,13 @@ export const UserReportPage = () => {
                 )}
             </Box>
             {isSubmissionSuccessful && (
-                <ReportSubmissionSnackbar
+                <InfoSnackbar
                     severity="success"
                     message="Η αναφορά συμπληρώθηκε επιτυχώς"
                 />
             )}
             {!!submissionError && (
-                <ReportSubmissionSnackbar
+                <InfoSnackbar
                     severity="error"
                     message={submissionError.message}
                 />
