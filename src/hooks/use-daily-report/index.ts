@@ -1,17 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Task } from "../use-tasks";
 import { AxiosError } from "@/network/axios";
 import { fetcher } from "@/network/fetcher";
 import { useUser } from "../use-user";
-
-interface Report {
-    id: number;
-    submittedAt?: string;
-    author?: string;
-    completedTasks: number[];
-    totalTasks: Task[];
-    createdAt: string;
-}
+import { Report } from "../use-reports";
 
 export const dailyReportQueryKey = ["report/daily"];
 

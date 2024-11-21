@@ -188,6 +188,9 @@ export default function UserReport() {
                             defaultValue={dailyReport?.author ?? ""}
                             rules={{
                                 required: "Παρακαλώ εισάγετε το όνομά σας",
+                                validate: (value) =>
+                                    !/^\s/.test(value) ||
+                                    "Το όνομα δεν μπορεί να ξεκινάει με κενό διάστημα",
                             }}
                             render={({ field }) => (
                                 <TextField

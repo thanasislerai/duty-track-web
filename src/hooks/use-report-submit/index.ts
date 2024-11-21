@@ -7,7 +7,7 @@ export type ReportFormFields = { author: string } & Record<string, boolean>;
 
 const getReportSubmitData = ({ author, ...tasks }: ReportFormFields) => {
     return {
-        author,
+        author: author.trim(),
         completedTasks: Object.entries(tasks)
             .map(([taskId, isDone]) => ({ taskId, isDone }))
             .filter(({ isDone }) => isDone)
